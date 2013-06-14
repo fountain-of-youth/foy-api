@@ -69,9 +69,10 @@ describe Foy::API do
       let(:packages) do
         {system: "gem", packages: [{name: 'rest-client', version: '1.0.1'}, {name: 'rspec', version: '2.0.0'}]}
       end
+      
+      let!(:project) { Project.create(id: "321") }
 
       before do
-        Project.stub(:find!).with("321").and_return(mock(:project))
         PackageSystem.create(name: "gem")
       end
 
@@ -82,7 +83,10 @@ describe Foy::API do
         put "/v1/projects/321/packages", packages
       end
 
-      it "creates nonexistent packages " do
+      it "registers packages per project" do
+        ProjectPackage.should_receive(:find_or_create_by_name).with('rest-client')
+        ProjectPackage.should_receive(:find_or_create_by_name).with('rspec')
+
         put "/v1/projects/321/packages", packages
       end
     end
