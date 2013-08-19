@@ -1,4 +1,4 @@
-source :rubygems
+source "https://rubygems.org"
 
 gem 'bson_ext'
 gem 'grape'
@@ -13,4 +13,5 @@ end
 group :test do
   gem "rack-test", require: "rack/test"
   gem "database_cleaner", require: "false"
+  gem "factory_girl"
 end

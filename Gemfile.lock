@@ -9,7 +9,7 @@ GIT
       plucky (~> 0.6.3)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     activemodel (3.0.20)
       activesupport (= 3.0.20)
@@ -24,6 +24,8 @@ GEM
     database_cleaner (0.9.1)
     descendants_tracker (0.0.1)
     diff-lcs (1.2.2)
+    factory_girl (4.2.0)
+      activesupport (>= 3.0.0)
     grape (0.4.0)
       activesupport
       builder
@@ -68,6 +70,7 @@ DEPENDENCIES
   bson_ext
   builder (= 2.1.2)
   database_cleaner
+  factory_girl
   grape
   mongo_mapper!
   rack-test
