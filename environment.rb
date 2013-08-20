@@ -4,7 +4,7 @@ require 'mongo_mapper'
 
 mongo_uri = if ENV['MONGO_URI']
   #mongodb://[username:password@]host1[:port1]
-  "mongodb://#{ENV['MONGO_USER']}:#{ENV['MONGO_PASSWORD']}@#{ENV['MONGO_URI']}"
+  "mongodb://#{ENV['MONGO_USER']}:#{ENV['MONGO_PASSWORD']}@#{ENV['MONGO_URI']}/#{ENV['MONGO_DATABASE_NAME']}"
 else
   'mongodb://localhost/foy'
 end
