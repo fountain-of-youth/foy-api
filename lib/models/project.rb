@@ -1,11 +1,10 @@
 class Project
-  include MongoMapper::Document
-  key :title, String
-  key :repository, String
-
-  many :project_packages
-  belongs_to :handler
-
+  include Mongoid::Document
+  store_in collection: :projects
+  field :title, type: String
+  field :repository, type: String
+  
+  has_many :project_packages
 
   def packages
     self.project_packages.collect(&:package)
@@ -22,5 +21,4 @@ class Project
       not package.updated?
     end
   end
-
 end

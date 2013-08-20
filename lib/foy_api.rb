@@ -18,8 +18,8 @@ module Foy
       end
       get ':id' do
         begin
-          Project.find!(params[:id])
-        rescue MongoMapper::DocumentNotFound
+          Project.find_by(id: params[:id])
+        rescue Mongoid::Errors::DocumentNotFound
           error! 'Not Found', 404
         end
       end
@@ -42,14 +42,13 @@ module Foy
             requires :packages,   type: Array,  desc: "List of packages"
           end
           put do
-            project = Project.find!(params[:project_id])
-            package_system = PackageSystem.find_by_name!(params[:system])
+            project = Project.find(params[:project_id])
+            package_system = PackageSystem.find_by(name: params[:system])
             
             params[:packages].each do |param_package|
-              package = package_system.packages.find_or_create_by_name(param_package[:name])
-              project_package = project.project_packages.find_or_create_by_package_id(package.id)
-              project_package.version = param_package[:version]
-              project_package.save!
+              package = package_system.packages.find_or_create_by(name: param_package[:name])
+              project_package = project.project_packages.find_or_create_by(package: package)
+              project_package.update_attributes!(version: param_package[:version])
             end
           end
         end

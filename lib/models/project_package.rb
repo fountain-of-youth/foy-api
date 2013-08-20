@@ -1,6 +1,9 @@
 class ProjectPackage
-  include MongoMapper::Document
-  key :version, String
+  include Mongoid::Document
+  store_in collection: :project_packages
+  
+  field :version, type: String
+  field :system,  type: String
 
   belongs_to :project
   belongs_to :package

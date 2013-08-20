@@ -1,6 +1,9 @@
 class PackageSystem
-  include MongoMapper::Document
-  key :name, String
+  include Mongoid::Document
+  field :name, type: String
+  store_in collection: :package_systems
 
-  many :packages
+  #validates_uniqueness_of :name
+
+  has_many :packages
 end

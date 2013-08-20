@@ -77,28 +77,28 @@ describe Foy::API do
   end
 
   describe "packages" do
-    let!(:project)          { create(:project) }
     let!(:package_system)   { create(:package_system) }
-    let!(:current_packages) { create_list(:package, 2, package_system: package_system) }
+    let!(:project)          { create(:project) }
+    let!(:current_packages) { package_system.packages }
     let(:put_data)          { put "/v1/projects/#{project.id}/packages", packages }
-
+    
     describe "PUT /v1/projects/:id/packages" do
       context "new packages" do
         let(:packages) do
-          {system: package_system.name, packages: [{name: 'rest-client', version: '1.0.1'}, {name: 'rspec', version: '2.0.0'}]}
+          {system: package_system.name, packages: [{name: "rest-client", version: "1.0.1"}, {name: "rspec", version: "2.0.0"}]}
         end
 
         it "creates nonexistent packages" do
           put_data
-          expect(Package.first(name: 'rest-client')).to_not be_nil
-          expect(Package.first(name: 'rspec')).to_not be_nil
-          expect(Package.count).to be_eql(4)
+          expect(package_system.packages.where(name: 'rest-client').first).to_not be_nil
+          expect(package_system.packages.where(name: 'rspec').first).to exist
+          expect(package_system.packages.count).to be_eql(4)
         end
 
         it "associates project with its packages" do
           put_data
-          expect(project.packages).to include(Package.first(name: 'rest-client'))
-          expect(project.packages).to include(Package.first(name: 'rspec'))
+          expect(project.packages).to include(package_system.packages.where(name: 'rest-client').first)
+          expect(project.packages).to include(package_system.packages.where(name: 'rspec').first)
         end
       end
 
