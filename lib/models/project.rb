@@ -6,6 +6,11 @@ class Project
   many :project_packages
   belongs_to :handler
 
+
+  def packages
+    self.project_packages.collect(&:package)
+  end
+
   def updated?
     self.project_packages.all? do |package|
       package.updated?

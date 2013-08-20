@@ -9,4 +9,10 @@ FactoryGirl.define do
   factory :package_system do
     name 'gem'
   end
+
+  factory :package do
+    name { "pkg #{generate(:id)}" }
+    version '3.0.0'
+    package_system 
+  end
 end

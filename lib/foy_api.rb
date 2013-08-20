@@ -47,7 +47,9 @@ module Foy
             
             params[:packages].each do |param_package|
               package = package_system.packages.find_or_create_by_name(param_package[:name])
-              project_package = project.project_packages.find_or_create_by_name(param_package[:name])
+              project_package = project.project_packages.find_or_create_by_package_id(package.id)
+              project_package.version = param_package[:version]
+              project_package.save!
             end
           end
         end
