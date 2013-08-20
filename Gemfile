@@ -3,7 +3,7 @@ source "https://rubygems.org"
 gem 'bson_ext'
 gem 'grape'
 gem 'builder', '2.1.2'
-gem 'mongo_mapper', git: 'git://github.com/jnunemaker/mongomapper.git'
+gem 'mongo_mapper', git: 'https://github.com/mongomapper/mongomapper.git'
 
 
 group :test, :development do
