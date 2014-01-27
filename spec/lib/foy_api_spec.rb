@@ -9,7 +9,7 @@ describe Foy::API do
 
   describe "projects" do
     let!(:projects) do
-      create_list(:project, 3)
+      FactoryGirl.create_list(:project, 3)
     end
     let!(:project) do
       projects.last
@@ -51,7 +51,7 @@ describe Foy::API do
         end
 
         it "adds new project" do
-          expect{ post_data }.to change{ Project.last.title }.from(Project.last.title).to("New Project")
+          expect{ post_data }.to change{ Project.all.last.title }.from(Project.all.last.title).to("New Project")
         end
 
         it "returns status 201" do
@@ -70,16 +70,16 @@ describe Foy::API do
 
         it "returns error message" do
           post_data
-          last_response.body.should == {"error" => "missing parameter: repository"}.to_json
+          last_response.body.should == {"error" => "repository is missing"}.to_json
         end
       end
     end
   end
 
   describe "packages" do
-    let!(:project)          { create(:project) }
-    let!(:package_system)   { create(:package_system) }
-    let!(:current_packages) { create_list(:package, 2, package_system: package_system) }
+    let!(:project)          { FactoryGirl.create(:project) }
+    let!(:package_system)   { FactoryGirl.create(:package_system) }
+    let!(:current_packages) { FactoryGirl.create_list(:package, 2, package_system: package_system) }
     let(:put_data)          { put "/v1/projects/#{project.id}/packages", packages }
 
     describe "PUT /v1/projects/:id/packages" do
