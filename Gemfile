@@ -15,3 +15,7 @@ group :test do
   gem "database_cleaner", require: "false"
   gem "factory_girl"
 end
+
+group :development do
+  gem 'foreman'
+end
