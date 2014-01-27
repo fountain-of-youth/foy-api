@@ -2,12 +2,12 @@ source "https://rubygems.org"
 
 gem 'bson_ext'
 gem 'grape'
-gem 'builder', '2.1.2'
-gem 'mongo_mapper', git: 'https://github.com/mongomapper/mongomapper.git'
+gem 'mongo_mapper', '0.12.0'
 
 
 group :test, :development do
   gem 'rspec'
+  gem 'byebug'
 end
 
 group :test do
