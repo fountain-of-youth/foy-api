@@ -38,7 +38,7 @@ module Foy
           desc "Register packages of a project"
           params do
             requires :project_id, type: String, desc: "Project ID"
-            requires :system,     type: String, desc: "Project ID"
+            requires :system,     type: String, desc: "Package system"
             requires :packages,   type: Array,  desc: "List of packages"
           end
           put do
