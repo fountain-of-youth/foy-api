@@ -4,8 +4,6 @@ class Project
   key :repository, String
 
   many :project_packages
-  belongs_to :handler
-
 
   def packages
     self.project_packages.collect(&:package)
