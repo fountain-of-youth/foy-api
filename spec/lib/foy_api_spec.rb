@@ -80,11 +80,11 @@ describe Foy::API do
     let!(:project)          { FactoryGirl.create(:project) }
     let!(:package_system)   { FactoryGirl.create(:package_system) }
     let!(:current_packages) { FactoryGirl.create_list(:package, 2, package_system: package_system) }
-    let(:put_data)          { put "/v1/projects/#{project.id}/packages", packages }
+    let(:put_data)          { put "/v1/projects/#{project.id}/packages", data }
 
     describe "PUT /v1/projects/:id/packages" do
       context "new packages" do
-        let(:packages) do
+        let(:data) do
           {system: package_system.name, packages: [{name: 'rest-client', version: '1.0.1'}, {name: 'rspec', version: '2.0.0'}]}
         end
 
@@ -103,7 +103,7 @@ describe Foy::API do
       end
 
       context "existing packages" do
-        let(:packages) do
+        let(:data) do
           {system: package_system.name, packages: current_packages.collect{|pkg| {name: pkg.name, version: '2.0.0'}}}
         end
 

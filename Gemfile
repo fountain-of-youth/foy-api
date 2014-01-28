@@ -12,7 +12,7 @@ end
 
 group :test do
   gem "rack-test", require: "rack/test"
-  gem "database_cleaner", require: "false"
+  gem "database_cleaner", require: false
   gem "factory_girl"
 end
 

@@ -1,11 +1,10 @@
-ENV['RACK_ENV'] ||= 'test'
+ENV['RACK_ENV'] = 'test'
+require File.expand_path("../../environment", __FILE__)
 
 require 'rack/test'
 require 'database_cleaner'
 require 'factory_girl'
 FactoryGirl.find_definitions
-
-require File.expand_path("../../environment", __FILE__)
 
 
 RSpec.configure do |config|
