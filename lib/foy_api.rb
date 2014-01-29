@@ -6,6 +6,20 @@ module Foy
     default_format :json
     version 'v1'
 
+    resources :packages do
+      segment '/:system' do
+        desc "Return all packages of a package system"
+        get do
+          begin
+            package_system = PackageSystem.find_by_name!(params[:system])
+            package_system.packages
+          rescue MongoMapper::DocumentNotFound
+            error! 'Not Found', 404
+          end
+        end
+      end
+    end
+
     resources :projects do
       desc "Return all projects"
       get do

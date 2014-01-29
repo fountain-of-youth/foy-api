@@ -7,6 +7,43 @@ describe Foy::API do
     Foy::API
   end
 
+  describe "packages" do
+    let!(:system) do
+      FactoryGirl.create(:package_system, name: 'pip')
+    end
+
+    let!(:other_packages) do
+      FactoryGirl.create_list(:package, 3)
+    end
+
+    let!(:packages) do
+      FactoryGirl.create_list(:package, 3, package_system: system)
+    end
+
+    describe "GET /v1/packages/:system.json" do
+      it "returns all packages of a system" do
+        get '/v1/packages/pip.json'
+        last_response.body.should == packages.to_json
+      end
+
+      it "returns only name and version for each package" do
+        get '/v1/packages/pip.json'
+        returned_packages = JSON.parse(last_response.body)
+        returned_packages.each do |pkg|
+          expect(pkg.keys).to be == ['name', 'version']
+        end
+      end
+
+      context "package system not found" do
+        it "returns 404" do
+          get '/v1/packages/xyz.json'
+          last_response.status.should == 404
+        end
+      end
+    end
+
+  end
+
   describe "projects" do
     let!(:projects) do
       FactoryGirl.create_list(:project, 3)
@@ -31,7 +68,7 @@ describe Foy::API do
 
       context "project not found" do
         let(:not_found_id) { "invalid" }
-        it "returns 404 when project is not found" do
+        it "returns 404" do
           get "/v1/projects/#{not_found_id}.json"
           last_response.status.should == 404
         end
