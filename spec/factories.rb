@@ -15,4 +15,10 @@ FactoryGirl.define do
     version '3.0.0'
     package_system 
   end
+
+  factory :project_package do
+    project
+    package
+    version '2.0.0'
+  end
 end

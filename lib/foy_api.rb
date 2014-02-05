@@ -66,6 +66,17 @@ module Foy
 
       segment '/:project_id' do
         resources :packages do
+          desc "List packages of a project"
+          params do
+            requires :project_id, type: String, desc: "Project ID"
+          end
+          get do
+            begin
+              Project.find!(params[:project_id]).project_packages
+            rescue MongoMapper::DocumentNotFound
+              error! 'Not Found', 404
+            end
+          end
           desc "Register packages of a project"
           params do
             requires :project_id, type: String, desc: "Project ID"

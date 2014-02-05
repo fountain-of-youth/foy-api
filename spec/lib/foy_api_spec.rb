@@ -172,9 +172,28 @@ describe Foy::API do
     let!(:project)          { FactoryGirl.create(:project) }
     let!(:package_system)   { FactoryGirl.create(:package_system) }
     let!(:current_packages) { FactoryGirl.create_list(:package, 2, package_system: package_system) }
-    let(:put_data)          { put "/v1/projects/#{project.id}/packages", data }
+
+    describe "GET /v1/projects/:id/packages" do
+      let!(:project_packages) { FactoryGirl.create_list(:project_package, 2, project: project) }
+      let(:get_data)          { get "/v1/projects/#{project.id}/packages" }
+
+      it "returns status 200" do
+        get_data
+        last_response.status.should == 200
+      end
+
+      it "returns project packages" do
+        get_data
+        returned_packages = JSON.parse(last_response.body)
+        expect(returned_packages.size).to be ==(2)
+        returned_packages.each do |pkg|
+          expect(pkg.keys).to be == ['name', 'version', 'system', 'updated']
+        end
+      end
+    end
 
     describe "PUT /v1/projects/:id/packages" do
+      let(:put_data)          { put "/v1/projects/#{project.id}/packages", data }
 
       context "new packages" do
         let(:data) do
