@@ -1,4 +1,4 @@
-ENV['RACK_ENV'] = 'test'
+ENV['APP_ENV'] = 'test'
 require File.expand_path("../../environment", __FILE__)
 
 require 'rack/test'
