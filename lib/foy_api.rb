@@ -1,5 +1,5 @@
 require 'grape'
-require 'models'
+require_relative 'models'
 
 module Foy
   class API < Grape::API
