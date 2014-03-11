@@ -6,15 +6,14 @@ class ProjectPackage
   belongs_to :package
 
   def updated?
-    Gem::Version.new(version) >= Gem::Version.new(self.package.version) rescue true
+    Gem::Version.new(version) >= Gem::Version.new(self.package.version) rescue nil
   end
 
   def as_json(options = {})
-    {
-      name: package.name,
-      version: self.version,
-      system: package.package_system.name,
-      updated: self.updated?
-    }
+    super(options).tap do |attrs|
+      attrs[:status]  = updated? ? 'updated' : 'outdated'
+      attrs[:system]  = package.package_system.name
+      attrs[:name]    = package.name
+    end
   end
 end

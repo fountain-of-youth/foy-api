@@ -21,4 +21,9 @@ class Project
     end
   end
 
+  def as_json(options = {})
+    super(options).tap do |attrs|
+      attrs[:status] = updated? ? 'updated' : 'outdated'
+    end
+  end
 end
