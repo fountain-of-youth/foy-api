@@ -5,9 +5,6 @@ module Foy
   class API < Grape::API
     default_format :json
     version 'v1'
-    before do
-      header "Access-Control-Allow-Origin", "*"
-    end
 
     resources :packages do
       segment '/:system' do
