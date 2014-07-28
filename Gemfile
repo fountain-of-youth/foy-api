@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem 'bson_ext'
 gem 'grape'
-gem 'mongo_mapper', '0.12.0'
+gem 'mongo_mapper'
 gem 'rack-cors'
 
 group :test, :development do
