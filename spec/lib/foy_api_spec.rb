@@ -12,9 +12,13 @@ describe Foy::API do
       FactoryGirl.create(:package_system, name: 'pip')
     end
 
+    let!(:other_system) do
+      FactoryGirl.create(:package_system, name: 'gem')
+    end
+
     describe "GET /v1/packages/:system.json" do
       let!(:other_packages) do
-        FactoryGirl.create_list(:package, 3)
+        FactoryGirl.create_list(:package, 3, package_system: other_system)
       end
 
       let!(:packages) do
@@ -23,21 +27,21 @@ describe Foy::API do
 
       it "returns all packages of a system" do
         get "/v1/packages/pip.json"
-        last_response.body.should == packages.to_json
+        expect(last_response.body).to eq(packages.to_json)
       end
 
       it "returns only name and version for each package" do
         get "/v1/packages/pip.json"
         returned_packages = JSON.parse(last_response.body)
         returned_packages.each do |pkg|
-          expect(pkg.keys).to be == ['name', 'version']
+          expect(pkg.keys).to eq(['name', 'version'])
         end
       end
 
       context "package system not found" do
         it "returns 404" do
           get '/v1/packages/xyz.json'
-          last_response.status.should == 404
+          expect(last_response.status).to eq(404)
         end
       end
     end
@@ -54,7 +58,7 @@ describe Foy::API do
 
         it "returns 404" do
           put '/v1/packages/xyz.json', data
-          last_response.status.should == 404
+          expect(last_response.status).to eq(404)
         end
       end
 
@@ -67,7 +71,7 @@ describe Foy::API do
           put "/v1/packages/#{system.name}.json", data
           expect(system.packages.first(name: 'rest-client')).to_not be_nil
           expect(system.packages.first(name: 'rspec')).to_not be_nil
-          expect(system.packages.count).to be ==(5)
+          expect(system.packages.count).to eq(5)
         end
       end
 
@@ -89,7 +93,7 @@ describe Foy::API do
         end
 
         it "doesn't udpate number of packages" do
-          expect{put_data}.to_not change{Package.count}.from(3)
+          expect{put_data}.to_not change{Package.count}.from(6)
         end
     
         it "doesn't updates package" do
@@ -110,7 +114,7 @@ describe Foy::API do
     describe "GET /v1/projects.json" do
       it "returns all projects" do
         get "/v1/projects.json"
-        last_response.body.should == projects.to_json
+        expect(last_response.body).to eq(projects.to_json)
       end
     end
 
@@ -118,14 +122,14 @@ describe Foy::API do
       let(:valid_id) { project.id }
       it "returns specified project" do
         get "/v1/projects/#{valid_id}.json"
-        last_response.body.should == project.to_json
+        expect(last_response.body).to eq(project.to_json)
       end
 
       context "project not found" do
         let(:not_found_id) { "invalid" }
         it "returns 404" do
           get "/v1/projects/#{not_found_id}.json"
-          last_response.status.should == 404
+          expect(last_response.status).to eq(404)
         end
       end
     end
@@ -148,7 +152,7 @@ describe Foy::API do
 
         it "returns status 201" do
           post_data
-          last_response.status.should == 201
+          expect(last_response.status).to eq(201)
         end
       end
 
@@ -157,12 +161,12 @@ describe Foy::API do
 
         it "returns status 400" do
           post_data
-          last_response.status.should == 400
+          expect(last_response.status).to eq(400)
         end
 
         it "returns error message" do
           post_data
-          last_response.body.should == {"error" => "repository is missing"}.to_json
+          expect(last_response.body).to eq({"error" => "repository is missing"}.to_json)
         end
       end
     end
@@ -174,20 +178,20 @@ describe Foy::API do
     let!(:current_packages) { FactoryGirl.create_list(:package, 2, package_system: package_system) }
 
     describe "GET /v1/projects/:id/packages" do
-      let!(:project_packages) { FactoryGirl.create_list(:project_package, 2, project: project) }
+      let!(:project_packages) { FactoryGirl.create_list(:project_package, 2, project: project, package: FactoryGirl.create(:package, {package_system: package_system})) }
       let(:get_data)          { get "/v1/projects/#{project.id}/packages" }
 
       it "returns status 200" do
         get_data
-        last_response.status.should == 200
+        expect(last_response.status).to eq(200)
       end
 
       it "returns project packages" do
         get_data
         returned_packages = JSON.parse(last_response.body)
-        expect(returned_packages.size).to be ==(2)
+        expect(returned_packages.size).to eq(2)
         returned_packages.each do |pkg|
-          expect(pkg.keys).to be == ['name', 'version', 'system', 'updated']
+          expect(pkg.keys).to eq(["id", "package_id", "project_id", "version", "status", "system", "name", "last_version"])
         end
       end
     end

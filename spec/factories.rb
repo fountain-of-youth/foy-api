@@ -13,7 +13,6 @@ FactoryGirl.define do
   factory :package do
     name { "pkg #{generate(:id)}" }
     version '3.0.0'
-    package_system 
   end
 
   factory :project_package do
