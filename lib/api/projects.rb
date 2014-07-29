@@ -12,11 +12,7 @@ module Freshdated
           requires :id, type: String, desc: "Project ID"
         end
         get ':id' do
-          begin
-            Project.find!(params[:id])
-          rescue MongoMapper::DocumentNotFound
-            error! 'Not Found', 404
-          end
+          Project.find!(params[:id])
         end
 
         desc "Create a project with title, repository"
@@ -35,11 +31,7 @@ module Freshdated
               requires :project_id, type: String, desc: "Project ID"
             end
             get do
-              begin
-                Project.find!(params[:project_id]).project_packages
-              rescue MongoMapper::DocumentNotFound
-                error! 'Not Found', 404
-              end
+              Project.find!(params[:project_id]).project_packages
             end
             desc "Register packages of a project"
             params do
