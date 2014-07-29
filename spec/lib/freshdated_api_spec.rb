@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe Foy::API do
+describe Freshdated::API do
   include Rack::Test::Methods
 
   def app
-    Foy::API
+    Freshdated::API
   end
 
   describe "packages" do

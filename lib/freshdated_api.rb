@@ -1,7 +1,7 @@
 require 'grape'
 require_relative 'models'
 
-module Foy
+module Freshdated
   class API < Grape::API
     default_format :json
     version 'v1'
