@@ -47,57 +47,42 @@ describe Freshdated::API::Packages do
     end
 
     describe "PUT /v1/packages/:system.json" do
-      let!(:other_packages) do
-        FactoryGirl.create_list(:package, 3, package_system: system)
+      let(:system) do
+        double(:system, update_packages!: nil)
       end
 
+      let(:data) do
+        {packages: [{name: 'rest-client', version: '1.0.1'}]}
+      end
+      
       context "package system not found" do
-        let(:data) do
-          {packages: [{name: 'rest-client', version: '1.0.1'}]}
+        before do
+          allow(PackageSystem).to receive(:find_by_name!)
+            .and_raise(MongoMapper::DocumentNotFound)
+          put "/v1/packages/pip.json", data
         end
 
         it "returns 404" do
-          put '/v1/packages/xyz.json', data
           expect(last_response.status).to eq(404)
         end
-      end
 
-      context "new packages" do
-        let(:data) do
-          {packages: [{name: 'rest-client', version: '1.0.1'}, {name: 'rspec', version: '2.0.0'}]}
-        end
-
-        it "creates nonexistent packages" do
-          put "/v1/packages/#{system.name}.json", data
-          expect(system.packages.first(name: 'rest-client')).to_not be_nil
-          expect(system.packages.first(name: 'rspec')).to_not be_nil
-          expect(system.packages.count).to eq(5)
+        it "doesn't update the packages" do
+          expect(system).to_not have_received(:update_packages!)
         end
       end
 
-      context "updating packages" do
-        let!(:current_packages) do
-          FactoryGirl.create_list(:package, 3, package_system: system)
+      context "package system found" do
+        before do
+          allow(PackageSystem).to receive(:find_by_name!).and_return(system)
+          put "/v1/packages/pip.json", data
         end
 
-        let(:package) do
-          other_packages.first
+        it "updates the packages" do
+          expect(system).to have_received(:update_packages!)
         end
-
-        let(:data) do
-          {packages: [{name: package.name, version: package.version}]}
-        end
-
-        let(:put_data) do
-          put "/v1/packages/#{system.name}.json", data
-        end
-
-        it "doesn't udpate number of packages" do
-          expect{put_data}.to_not change{Package.count}.from(6)
-        end
-    
-        it "doesn't updates package" do
-          expect{put_data}.to_not change{Package.all}
+        
+        it "returns 200" do
+          expect(last_response.status).to eq(200)
         end
       end
     end
