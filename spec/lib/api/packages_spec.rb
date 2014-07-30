@@ -78,7 +78,7 @@ describe Freshdated::API::Packages do
         end
 
         it "updates the packages" do
-          expect(system).to have_received(:update_packages!)
+          expect(system).to have_received(:update_packages!).with(data[:packages])
         end
         
         it "returns 200" do
