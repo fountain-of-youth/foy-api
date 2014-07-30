@@ -21,7 +21,20 @@ class Project
     end
   end
 
-  def as_json(options = {})
+  def update_packages_for! system, package_data
+    package_data.each do |data|
+      package = system.packages.find_or_create_by_name(data[:name])
+      update_package! package, data
+    end
+  end
+
+  def update_package! package, data
+    project_package = project_packages.find_or_create_by_package_id(package.id)
+    project_package.version = data[:version]
+    project_package.save!
+  end
+
+  def as_json options = {}
     super(options).tap do |attrs|
       attrs[:status] = updated? ? 'updated' : 'outdated'
     end

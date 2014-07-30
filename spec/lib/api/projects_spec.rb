@@ -101,38 +101,25 @@ describe Freshdated::API::Projects do
     end
 
     describe "PUT /v1/projects/:id/packages" do
+      let(:data) do
+        {system: package_system.name, packages: [{name: 'rest-client', version: '1.0.1'}, {name: 'rspec', version: '2.0.0'}]}
+      end
       let(:put_data)          { put "/v1/projects/#{project.id}/packages", data }
 
-      context "new packages" do
-        let(:data) do
-          {system: package_system.name, packages: [{name: 'rest-client', version: '1.0.1'}, {name: 'rspec', version: '2.0.0'}]}
-        end
-
-        it "associates project with its packages" do
+      context "updating sucessfully" do
+        before do
+          allow(Project).to receive(:find!).and_return(project)
+          allow(project).to receive(:update_packages_for!)
           put_data
-          expect(project.packages).to include(Package.first(name: 'rest-client'))
-          expect(project.packages).to include(Package.first(name: 'rspec'))
         end
 
-        it "creates nonexistent packages" do
+        it "updates the packages" do
+          expect(project).to have_received(:update_packages_for!).with(package_system, data[:packages])
+        end
+
+        it "returns 200" do
           put_data
-          expect(package_system.packages.first(name: 'rest-client')).to_not be_nil
-          expect(package_system.packages.first(name: 'rspec')).to_not be_nil
-          expect(package_system.packages.count).to be ==(4)
-        end
-      end
-
-      context "existing packages" do
-        let(:data) do
-          {system: package_system.name, packages: current_packages.collect{|pkg| {name: pkg.name, version: '2.0.0'}}}
-        end
-
-        it "updates current project packages" do
-          expect{put_data}.to change{project.reload; project.packages}.from([]).to(current_packages)
-        end
-    
-        it "doesn't updates package" do
-          expect{put_data}.to_not change{Package.all}
+          expect(last_response.status).to eq(200)
         end
       end
     end

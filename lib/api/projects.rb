@@ -41,14 +41,8 @@ module Freshdated
             end
             put do
               project = Project.find!(params[:project_id])
-              package_system = PackageSystem.find_by_name!(params[:system])
-              
-              params[:packages].each do |param_package|
-                package = package_system.packages.find_or_create_by_name(param_package[:name])
-                project_package = project.project_packages.find_or_create_by_package_id(package.id)
-                project_package.version = param_package[:version]
-                project_package.save!
-              end
+              package_system = PackageSystem.find_by_name! params[:system]
+              project.update_packages_for! package_system, params[:packages]
             end
           end
         end
