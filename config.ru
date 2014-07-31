@@ -11,4 +11,4 @@ use Rack::Cors do
   end
 end
 
-run Freshdated::API
+run Freshdated::Root

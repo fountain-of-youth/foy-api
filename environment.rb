@@ -17,4 +17,4 @@ end
 
 MongoMapper.setup({ENV['APP_ENV'] => {'uri' => mongo_uri}}, ENV['APP_ENV'])
 
-require_relative 'lib/freshdated_api'
+require_relative 'app/api/base'

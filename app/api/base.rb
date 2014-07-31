@@ -1,7 +1,7 @@
 require 'grape'
-require_relative 'models'
-require_relative 'api/packages'
-require_relative 'api/projects'
+require 'app/models'
+require 'app/api/packages'
+require 'app/api/projects'
 
 module Freshdated
   class Root < Grape::API
